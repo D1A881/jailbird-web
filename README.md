@@ -7,7 +7,7 @@ A single-file browser app for browsing the Lewis & Clark County jail roster and 
 
 ## Quick Start
 
-1. Download `jail.html`
+1. Download `<a href="https://github.com/D1A881/jailbird/raw/refs/heads/main/jail.html">jail.html</a>`
 2. Open it in Chrome, Firefox, Edge, or Safari
 3. The roster PDF loads automatically on first visit and is cached locally for subsequent visits
 
