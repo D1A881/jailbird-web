@@ -3,11 +3,11 @@
 
 ---
 
-A single-file browser app for browsing the Lewis & Clark County jail roster and Helena Municipal Court arrest warrant list. No server, no installation. Just open `jail.html` directly in any modern browser.
+A single-file browser app for browsing the Lewis & Clark County jail roster and Helena Municipal Court arrest warrant list. No server, no installation. Just open <a href="https://github.com/D1A881/jailbird/raw/refs/heads/main/jail.html">`jail.html`</a> directly in any modern browser.
 
 ## Quick Start
 
-1. Download `<a href="https://github.com/D1A881/jailbird/raw/refs/heads/main/jail.html">jail.html</a>`
+1. Download <a href="https://github.com/D1A881/jailbird/raw/refs/heads/main/jail.html">`jail.html`</a>
 2. Open it in Chrome, Firefox, Edge, or Safari
 3. The roster PDF loads automatically on first visit and is cached locally for subsequent visits
 
