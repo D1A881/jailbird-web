@@ -16,6 +16,9 @@
     --text:     #e8e6e1;
     --muted:    #6b6d72;
     --accent:   #e8e6e1;
+    --error-bg: #2a1010;
+    --error-brd: #5a2020;
+    --error-text: #e89090;
   }
 
   body {
@@ -27,7 +30,7 @@
     line-height: 1.5;
   }
 
-
+  /* ── Components ── */
   .open-file-btn {
     display: inline-flex; align-items: center; gap: 5px;
     font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.06em;
@@ -37,6 +40,7 @@
     transition: color 0.15s, border-color 0.15s;
   }
   .open-file-btn:hover { color: var(--text); border-color: var(--accent); }
+  
   .fmt-combo {
     display: inline-flex; align-items: center;
     background: var(--surface); border: 1px solid var(--border);
@@ -58,7 +62,8 @@
   }
   .fmt-combo-arrow:hover { color: var(--text); }
   .fmt-combo-arrow option { background: #1a1b1e; color: var(--text); }
-  /* ── Loading ── */
+
+  /* ── Loading & Error ── */
   #loading-overlay {
     position: fixed; inset: 0; background: var(--bg);
     display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -70,19 +75,14 @@
     border-radius: 50%; animation: spin 0.7s linear infinite;
   }
   @keyframes spin { to { transform: rotate(360deg); } }
-  .load-label {
-    font-family: 'DM Mono', monospace; font-size: 11px;
-    letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted);
-  }
+  .load-label { font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
   #load-progress { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); }
 
-  /* ── Error ── */
   #error-banner {
-    display: none;
-    background: #2a1010; border: 1px solid #5a2020; color: #e89090;
-    font-family: 'DM Mono', monospace; font-size: 11px;
-    padding: 14px 20px; border-radius: 4px; margin: 20px 40px; line-height: 1.7;
+    display: none; background: var(--error-bg); border: 1px solid var(--error-brd); color: var(--error-text);
+    font-family: 'DM Mono', monospace; font-size: 11px; padding: 14px 20px; border-radius: 4px; margin: 20px 40px; line-height: 1.6;
   }
+  #error-banner a { color: var(--accent); text-decoration: underline; }
 
   /* ── App ── */
   #app { opacity: 0; transition: opacity 0.3s; }
@@ -96,12 +96,8 @@
   header h2 { font-size: 22px; font-weight: 300; letter-spacing: -0.02em; }
   header h2 span { font-weight: 500; }
   .web-sup {
-    font-size: 0.45em;
-    font-variant: small-caps;
-    font-weight: 500;
-    letter-spacing: 0.08em;
-    vertical-align: super;
-    opacity: 0.7;
+    font-size: 0.45em; font-variant: small-caps; font-weight: 500;
+    letter-spacing: 0.08em; vertical-align: super; opacity: 0.7;
   }
 
   .meta-row { display: flex; align-items: center; gap: 16px; margin-top: 8px; flex-wrap: wrap; }
@@ -111,22 +107,28 @@
     border-radius: 2px; font-size: 10px; font-weight: 500; letter-spacing: 0.06em;
   }
 
-  /* ── Search ── */
-  .search-bar { max-width: 1200px; margin: 24px auto 0; padding: 0 40px; }
+  .search-bar { max-width: 1200px; margin: 24px auto 0; padding: 0 40px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;}
+  .search-input-wrapper { flex: 1; min-width: 250px; }
   .search-bar input {
-    width: 100%; max-width: 380px; background: var(--surface);
+    width: 100%; background: var(--surface);
     border: 1px solid var(--border); border-radius: 4px; padding: 8px 14px;
     font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--text);
     outline: none; transition: border-color 0.15s;
   }
-  .search-bar input::placeholder { color: var(--muted); }
   .search-bar input:focus { border-color: var(--accent); }
+  
+  .actions-bar {
+    display: flex; gap: 10px; margin-top: 10px;
+  }
+  .action-btn {
+    background: transparent; border: 1px solid var(--border); color: var(--muted);
+    font-family: 'DM Mono', monospace; font-size: 10px; padding: 4px 10px; border-radius: 3px; cursor: pointer;
+    transition: all 0.15s;
+  }
+  .action-btn:hover { color: var(--text); border-color: var(--accent); }
 
   /* ── Tabs ── */
-  .tabs-wrapper {
-    max-width: 1200px; margin: 24px auto 0; padding: 0 40px;
-    border-bottom: 1px solid var(--border);
-  }
+  .tabs-wrapper { max-width: 1200px; margin: 24px auto 0; padding: 0 40px; border-bottom: 1px solid var(--border); }
   .tabs { display: flex; overflow-x: auto; }
   .tab {
     font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 0.08em;
@@ -137,11 +139,7 @@
   }
   .tab:hover { color: var(--text); }
   .tab.active { color: var(--accent); border-bottom: 2px solid var(--accent); }
-  .tab-count {
-    display: inline-block; font-family: 'DM Mono', monospace; font-size: 10px;
-    background: var(--border); color: var(--muted);
-    padding: 1px 5px; border-radius: 2px; margin-left: 5px;
-  }
+  .tab-count { display: inline-block; font-family: 'DM Mono', monospace; font-size: 10px; background: var(--border); color: var(--muted); padding: 1px 5px; border-radius: 2px; margin-left: 5px; }
   .tab.active .tab-count { background: rgba(232,230,225,0.12); color: var(--text); }
 
   /* ── Content ── */
@@ -149,46 +147,38 @@
   .panel { display: none; }
   .panel.active { display: block; }
 
-  /* ── Overview stats ── */
   .stats-grid {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 12px; margin-bottom: 32px;
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 32px;
   }
   .stat-card {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: 6px; padding: 18px 20px;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 18px 20px;
   }
   .stat-card .label {
-    font-family: 'DM Mono', monospace; font-size: 10px;
-    letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px;
+    font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--muted); margin-bottom: 6px;
   }
   .stat-card .value { font-size: 28px; font-weight: 300; letter-spacing: -0.03em; }
 
   .charge-breakdown { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   .breakdown-section {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: 6px; padding: 20px;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 20px;
   }
   .breakdown-section h3 {
-    font-family: 'DM Mono', monospace; font-size: 10px;
-    letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 16px;
+    font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--muted); margin-bottom: 16px;
   }
-  .breakdown-row {
-    display: flex; align-items: center;
-    padding: 6px 0; border-bottom: 1px solid var(--border); font-size: 13px;
-  }
+  .breakdown-row { display: flex; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
   .breakdown-row:last-child { border-bottom: none; }
   .bar-wrap { flex: 1; margin: 0 12px; height: 3px; background: var(--border); border-radius: 2px; overflow: hidden; }
   .bar { height: 100%; background: var(--accent); border-radius: 2px; }
   .num { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); min-width: 24px; text-align: right; }
 
   /* ── Table ── */
-  .roster-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .roster-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 20px; }
   .roster-table thead th {
     font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.1em;
     text-transform: uppercase; color: var(--muted); text-align: left;
-    padding: 8px 14px; border-bottom: 1px solid var(--border);
-    white-space: nowrap; font-weight: 400; cursor: pointer; user-select: none;
+    padding: 8px 14px; border-bottom: 1px solid var(--border); white-space: nowrap; cursor: pointer; user-select: none;
   }
   .roster-table thead th:hover { color: var(--text); }
   .roster-table thead th.sorted { color: var(--text); }
@@ -196,12 +186,11 @@
   .roster-table tbody tr:hover { background: rgba(232,230,225,0.04); }
   .roster-table tbody td { padding: 10px 14px; vertical-align: middle; }
 
-  .name-cell  { font-weight: 500; white-space: nowrap; }
-  .age-cell   { font-family: 'DM Mono', monospace; font-size: 12px; text-align: center; }
-  .date-cell  { font-family: 'DM Mono', monospace; font-size: 11px; white-space: nowrap; }
+  .name-cell { font-weight: 500; white-space: nowrap; }
+  .age-cell { font-family: 'DM Mono', monospace; font-size: 12px; text-align: center; }
+  .date-cell { font-family: 'DM Mono', monospace; font-size: 11px; white-space: nowrap; }
   .elapsed-cell { font-family: 'DM Mono', monospace; font-size: 11px; white-space: nowrap; color: var(--muted); }
-  .booking-num  { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); }
-
+  .booking-num { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); }
   .sex-badge {
     display: inline-block; font-family: 'DM Mono', monospace; font-size: 9px;
     letter-spacing: 0.06em; padding: 2px 6px; border-radius: 2px;
@@ -213,76 +202,56 @@
     font-family: 'DM Mono', monospace; font-size: 12px; letter-spacing: 0.06em;
   }
 
-  /* ── Search icons ── */
+  /* Mobile Table Card Layout */
+  @media (max-width: 768px) {
+    .roster-table { font-size: 0.9em; }
+    .roster-table thead { display: none; }
+    .roster-table tbody tr { display: block; margin-bottom: 16px; border: 1px solid var(--border); border-radius: 6px; overflow: hidden; background: var(--surface); }
+    .roster-table tbody td { display: block; border: none; padding: 10px; border-bottom: 1px solid var(--border); text-align: left; }
+    .roster-table tbody td:last-child { border-bottom: none; }
+    .roster-table tbody td::before {
+      content: attr(data-label) ': '; font-weight: 500; color: var(--muted); display: block; font-size: 10px; margin-bottom: 4px; text-transform: uppercase;
+    }
+    .search-bar { flex-direction: column; align-items: stretch; }
+    .actions-bar { width: 100%; }
+  }
+
+  /* ── Icons ── */
   .search-cell { white-space: nowrap; }
   .search-icon {
     display: inline-flex; align-items: center; justify-content: center;
-    width: 22px; height: 22px; margin-right: 3px;
-    border-radius: 3px; color: var(--muted);
-    opacity: 0.55; transition: opacity 0.15s, transform 0.1s;
+    width: 24px; height: 24px; margin-right: 3px;
+    border-radius: 4px; color: var(--muted);
+    opacity: 0.6; transition: opacity 0.15s, transform 0.1s, background 0.15s;
     vertical-align: middle; text-decoration: none;
   }
-  .search-icon:hover { opacity: 1; transform: scale(1.15); }
+  .search-icon:hover { opacity: 1; transform: scale(1.1); background: rgba(255,255,255,0.05); }
   .search-icon svg { width: 14px; height: 14px; display: block; }
 
-
-  /* ── County Websites ── */
+  /* ── County & Warrants ── */
   .counties-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 8px;
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 8px;
   }
   .county-link {
-    display: block;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    padding: 10px 14px;
-    color: var(--text);
-    text-decoration: none;
-    font-size: 13px;
-    transition: border-color 0.15s, background 0.15s;
+    display: block; background: var(--surface); border: 1px solid var(--border); border-radius: 4px;
+    padding: 10px 14px; color: var(--text); text-decoration: none; font-size: 13px; transition: border-color 0.15s;
   }
-  .county-link:hover {
-    border-color: var(--accent);
-    background: rgba(232,230,225,0.05);
-  }
-  .county-link .county-domain {
-    display: block;
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    color: var(--muted);
-    margin-top: 2px;
-  }
+  .county-link:hover { border-color: var(--accent); background: rgba(232,230,225,0.05); }
+  .county-link .county-domain { display: block; font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); margin-top: 2px; }
 
-
-  /* ── Links ── */
   .links-list { display: flex; flex-direction: column; gap: 8px; max-width: 480px; }
   .link-item {
     display: flex; justify-content: space-between; align-items: center;
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: 4px; padding: 12px 16px;
-    color: var(--text); text-decoration: none; font-size: 13px; font-weight: 500;
-    transition: border-color 0.15s, background 0.15s;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 12px 16px;
+    color: var(--text); text-decoration: none; font-size: 13px; font-weight: 500; transition: all 0.15s;
   }
   .link-item:hover { border-color: var(--accent); background: rgba(232,230,225,0.05); }
-  .link-url {
-    font-family: 'DM Mono', monospace; font-size: 10px;
-    color: var(--muted); font-weight: 400;
-  }
-  /* ── Arrest Warrants ── */
-  .warrant-row {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px;
-  }
+  .link-url { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); font-weight: 400; }
+
+  .warrant-row { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
   .warrant-row:last-child { border-bottom: none; }
   .warrant-name { font-weight: 500; }
   .warrant-icons { white-space: nowrap; flex-shrink: 0; margin-left: 12px; }
-  @media (max-width: 700px) {
-    header, .search-bar, .tabs-wrapper, .content { padding-left: 16px; padding-right: 16px; }
-    .charge-breakdown { grid-template-columns: 1fr; }
-    .stats-grid { grid-template-columns: repeat(2, 1fr); }
-  }
 </style>
 </head>
 <body>
@@ -303,14 +272,15 @@
       <span id="print-date">Loading…</span>
       <span class="count-badge" id="total-badge">—</span>
       <span style="opacity:.6">lccountymt.gov/sheriff</span>
+      
       <button class="open-file-btn" onclick="document.getElementById('pdf-file-input').click()" title="Load roster PDF from disk">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" width="13" height="13"><path d="M3 7a2 2 0 012-2h4l2 2h8a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>
         Open Roster PDF
       </button>
       <input type="file" id="pdf-file-input" accept=".pdf,application/pdf" style="display:none">
+
       <span class="fmt-combo" title="Search query format — pick a preset or type your own (tokens: first, last)">
-        <input id="fmt-input" class="fmt-combo-input" value="first+last"
-               oninput="onFmtChange()" autocomplete="off" spellcheck="false" placeholder="format…">
+        <input id="fmt-input" class="fmt-combo-input" value="first+last" oninput="onFmtChange()" autocomplete="off" spellcheck="false" placeholder="format…">
         <select id="fmt-preset" class="fmt-combo-arrow" onchange="onFmtPreset()" title="Pick a preset">
           <option value="">▾</option>
           <option value="first+last">first+last</option>
@@ -324,17 +294,23 @@
         </select>
       </span>
     </div>
-  </header>
 
-  <div class="search-bar">
-    <input type="text" id="search" placeholder="Search by name, charge, booking #…" autocomplete="off">
-  </div>
+    <div class="search-bar">
+      <div class="search-input-wrapper">
+        <input type="text" id="search" placeholder="Search by name, charge, booking #…" autocomplete="off">
+      </div>
+      <div class="actions-bar">
+        <button class="action-btn" onclick="downloadCSV()">Download CSV</button>
+        <button class="action-btn" onclick="clearCache()">Clear Cache</button>
+      </div>
+    </div>
+  </header>
 
   <div class="tabs-wrapper">
     <div class="tabs">
       <button class="tab active" data-tab="all">All <span class="tab-count" id="cnt-all">—</span></button>
       <button class="tab" data-tab="stats">Overview</button>
-      <button class="tab" data-tab="counties">County Websites</button>
+      <button class="tab" data-tab="counties">County Websites <span class="tab-count" id="cnt-counties"></span></button>
       <button class="tab" data-tab="warrants">Arrest Warrants <span class="tab-count" id="cnt-warrants">—</span></button>
       <button class="tab" data-tab="links">Links</button>
     </div>
@@ -359,6 +335,7 @@
       <div class="links-list">
         <a class="link-item" href="https://www.helenamt.gov/Departments/Municipal-Court/Arrest-Warrants-List" target="_blank" rel="noopener">Arrest Warrants<span class="link-url">helenamt.gov</span></a>
         <a class="link-item" href="https://www.lccountymt.gov/files/assets/county/v/0001/sheriff/documents/jail-roster.pdf" target="_blank" rel="noopener">Inmate Roster PDF<span class="link-url">lccountymt.gov</span></a>
+        <a class="link-item" href="https://montana.analogy.com/" target="_blank" rel="noopener" style="border-color: #888;">MT Criminal Search (Analogy)<span class="link-url">montana.analogy.com</span></a>
       </div>
     </div>
     <div id="panel-warrants" class="panel">
@@ -388,31 +365,44 @@ const PDF_URL = 'https://www.lccountymt.gov/files/assets/county/v/183/sheriff/do
 const PROXY   = 'https://corsproxy.io/?';
 
 // ── Search format ─────────────────────────────────────────────────────────────
-let searchFmt = 'first+last'; // default
+let searchFmt = localStorage.getItem('jailbird_format') || 'first+last';
+document.getElementById('fmt-input').value = searchFmt;
+
+function safeUrlParam(str) {
+  // Double encode to prevent XSS in search queries
+  if (!str) return '';
+  try {
+    return encodeURIComponent(encodeURIComponent(str.trim()));
+  } catch (e) {
+    return '';
+  }
+}
 
 function buildQuery(first, last) {
   const fmt = searchFmt || 'first+last';
 
   const presets = {
-    'first+last':   () => encodeURIComponent(first) + '+'   + encodeURIComponent(last),
-    'last+first':   () => encodeURIComponent(last)  + '+'   + encodeURIComponent(first),
-    'first%20last': () => encodeURIComponent(first) + '%20' + encodeURIComponent(last),
-    'last%20first': () => encodeURIComponent(last)  + '%20' + encodeURIComponent(first),
-    'last%2Cfirst': () => encodeURIComponent(last)  + '%2C' + encodeURIComponent(first),
-    'first%2Clast': () => encodeURIComponent(first) + '%2C' + encodeURIComponent(last),
-    '"first last"': () => encodeURIComponent('"' + first + ' ' + last + '"'),
-    '"last first"': () => encodeURIComponent('"' + last  + ' ' + first + '"'),
+    'first+last':   () => safeUrlParam(first) + '+'   + safeUrlParam(last),
+    'last+first':   () => safeUrlParam(last)  + '+'   + safeUrlParam(first),
+    'first%20last': () => safeUrlParam(first) + '%20' + safeUrlParam(last),
+    'last%20first': () => safeUrlParam(last)  + '%20' + safeUrlParam(first),
+    'last%2Cfirst': () => safeUrlParam(last)  + '%2C' + safeUrlParam(first),
+    'first%2Clast': () => safeUrlParam(first) + '%2C' + safeUrlParam(last),
+    '"first last"': () => safeUrlParam('"' + first + ' ' + last + '"'),
+    '"last first"': () => safeUrlParam('"' + last  + ' ' + first + '"'),
   };
+  
   if (presets[fmt]) return presets[fmt]();
 
   // Fix #4: use word boundaries so tokens like "lastname" aren't partially matched
   return fmt
-    .replace(/\bfirst\b/g, encodeURIComponent(first))
-    .replace(/\blast\b/g,  encodeURIComponent(last));
+    .replace(/\bfirst\b/g, safeUrlParam(first))
+    .replace(/\blast\b/g,  safeUrlParam(last));
 }
 
 function onFmtChange() {
   searchFmt = document.getElementById('fmt-input').value.trim();
+  localStorage.setItem('jailbird_format', searchFmt);
   if (currentFilter === 'all') renderAll();
   else if (currentFilter === 'warrants' && typeof window._warrantNames !== 'undefined') renderWarrants(window._warrantNames);
 }
@@ -550,7 +540,13 @@ async function loadRoster() {
 
   setProgress('Parsing records…');
   const text = await extractText(pdf);
-  const { inmates, printDate } = parseRoster(text);
+  const { inmates, printDate, parseError } = parseRoster(text);
+  
+  if (parseError) {
+    initApp(inmates, printDate, `PDF format seems to have changed. Found ${inmates.length} records.<br><br>Please help fix the parser by sharing the PDF: <a href="mailto:developer@example.com?subject=JailbirdPDF%20Issue">Report Issue</a>`);
+    return;
+  }
+
   initApp(inmates, printDate);
 }
 
@@ -569,17 +565,23 @@ function parseRoster(text) {
     .trim();
 
   const inmates = [];
-  const re = /([A-Z][A-Z\-']{0,29},\s*[A-Z][A-Z\-']{0,29})\s+(\d{1,3})\s+(Male|Female)\s+(\d{2}\/\d{2}\/\d{2,4}\s+\d{2}:\d{2})\s+([\d]{2}-[\d]{4,6})\s+(.*?)(?=(?:[A-Z][A-Z\-']{0,29},\s*[A-Z].*?\s+\d{1,3}\s+(?:Male|Female))|$)/g;
+  // Regex looks for: Last, First [Middle] Age Sex Date Time BookingNum Holds
+  const re = /([A-Z][A-Z\-']{0,29},\s*[A-Z][A-Z\-']{0,29}(?:\s+[A-Z][A-Z\-']*)?)\s+(\d{1,3})\s+(Male|Female)\s+(\d{2}\/\d{2}\/\d{2,4}\s+\d{2}:\d{2})\s+([\d]{2}-[\d]{4,6})\s+(.*?)(?=(?:[A-Z][A-Z\-']{0,29},\s*[A-Z].*?\s+\d{1,3}\s+(?:Male|Female))|$)/g;
 
   let m;
   while ((m = re.exec(text)) !== null) {
     const age = parseInt(m[2], 10);
     if (age < 1 || age > 110) continue;
     const name = m[1].replace(/\s+/g, ' ').trim();
-    inmates.push({ name, age, sex: m[3], booking: m[4].trim(), num: m[5].trim(), holds: m[6].replace(/\s+/g, ' ').trim() });
+    // Fix: Clean up holds a bit more aggressively to prevent random PDF artifacts
+    const holds = m[6].replace(/\s+/g, ' ').trim().replace(/\*{2,}/g, ''); 
+    inmates.push({ name, age, sex: m[3], booking: m[4].trim(), num: m[5].trim(), holds: holds });
   }
 
-  return { inmates, printDate };
+  // Parser Robustness Check: If 0 records found but text is large, it's likely a format change
+  const parseError = inmates.length === 0 && text.length > 1000;
+
+  return { inmates, printDate, parseError };
 }
 
 // ── State ─────────────────────────────────────────────────────────────────────
@@ -617,6 +619,10 @@ function initApp(inmates, printDate, pdfError) {
     searchQuery = e.target.value;
     if (currentFilter !== 'stats' && currentFilter !== 'counties' && currentFilter !== 'links') renderAll();
   });
+  
+  document.querySelectorAll('.tab').forEach(tab => {
+      if (tab.dataset.tab === 'counties') tab.querySelector('.tab-count').textContent = COUNTIES.length;
+  });
 }
 
 // ── Data helpers ──────────────────────────────────────────────────────────────
@@ -634,8 +640,8 @@ function getFiltered() {
   let data = applySearch(RAW);
   data.sort((a, b) => {
     let va, vb;
-    if      (sortField === 'name')    { va = a.name; vb = b.name; }
-    else if (sortField === 'age')     { va = a.age;  vb = b.age; }
+    if      (sortField === 'name')    { va = a.name.toLowerCase(); vb = b.name.toLowerCase(); }
+    else if (sortField === 'age')     { va = a.age; vb = b.age; }
     else if (sortField === 'booking') { va = parseDate(a.booking); vb = parseDate(b.booking); }
     return va < vb ? -sortDir : va > vb ? sortDir : 0;
   });
@@ -705,13 +711,14 @@ function renderTable(data, pdfError) {
   }
   table.style.display = '';
   noResults.style.display = 'none';
+  
   table.querySelector('tbody').innerHTML = data.map(r => `<tr>
-    <td class="name-cell">${r.name}</td>
-    <td class="age-cell">${r.age}</td>
-    <td><span class="sex-badge">${r.sex[0]}</span></td>
-    <td class="date-cell">${r.booking}</td>
-    <td class="elapsed-cell">${elapsed(r.booking)}</td>
-    <td class="booking-num">${r.num}</td>
+    <td class="name-cell" data-label="Name">${r.name}</td>
+    <td class="age-cell" data-label="Age">${r.age}</td>
+    <td data-label="Sex"><span class="sex-badge">${r.sex[0]}</span></td>
+    <td class="date-cell" data-label="Booking Date">${r.booking}</td>
+    <td class="elapsed-cell" data-label="Days Elapsed">${elapsed(r.booking)}</td>
+    <td class="booking-num" data-label="Booking #">${r.num}</td>
     <td class="search-cell">${searchIcons(r.name)}</td>
   </tr>`).join('');
 }
@@ -765,6 +772,7 @@ function renderStats() {
 
 // ── Search icons ──────────────────────────────────────────────────────────────
 // Fix #2 & #3: parseName() inlined here; separate function removed.
+// Security Fix: All generated URLs now use safeUrlParam()
 function searchIcons(full) {
   full = full.trim();
   let last = full, first = '';
@@ -809,13 +817,6 @@ function searchIcons(full) {
       svg: `<svg viewBox="0 0 24 24" fill="#FF0000"><path d="M23.5 6.2s-.2-1.6-1-2.3c-.9-1-1.9-1-2.4-1C17.6 2.8 12 2.8 12 2.8s-5.6 0-8.1.1c-.5.1-1.5.1-2.4 1-.7.7-1 2.3-1 2.3S.3 8 .3 9.8v1.7c0 1.8.2 3.5.2 3.5s.2 1.6 1 2.3c.9 1 2.1.9 2.7 1 1.9.2 8.3.2 8.3.2s5.6 0 8.1-.1c.5-.1 1.5-.1 2.4-1 .7-.7 1-2.3 1-2.3s.2-1.7.2-3.5V9.8c-.1-1.8-.2-3.6-.2-3.6zM9.7 14.8V8.4l6.6 3.2-6.6 3.2z"/></svg>` },
     { title: 'Search Reddit',     href: `https://www.reddit.com/search/?q=${q}`,
       svg: `<svg viewBox="0 0 24 24" fill="#FF4500"><circle cx="12" cy="12" r="10"/><path fill="white" d="M20 12a2 2 0 00-2-2 2 2 0 00-1.3.5C15.4 9.7 14 9.2 12.5 9.1l.7-3.2 2.2.5a1.5 1.5 0 103-0.1 1.5 1.5 0 00-2.8.4l-2.5-.5c-.2 0-.3.1-.3.2l-.8 3.6C10 10.1 8.5 10.6 7.3 11.5A2 2 0 004 12a2 2 0 00.9 1.7 3.5 3.5 0 000 .5c0 2.5 2.7 4.5 6.1 4.5s6.1-2 6.1-4.5c0-.2 0-.3 0-.5A2 2 0 0020 12zm-10 2a1 1 0 111-1 1 1 0 01-1 1zm5.5 2.5c-.6.6-1.7.9-3.5.9s-2.9-.3-3.5-.9a.3.3 0 01.5-.5c.5.5 1.4.7 3 .7s2.5-.2 3-.7a.3.3 0 01.5.5zm-.5-1.5a1 1 0 111-1 1 1 0 01-1 1z"/></svg>` },
-    { title: 'Search Truth Social', href: `https://truthsocial.com/search?q=${q}`,
-      svg: `<svg viewBox="0 0 24 24" fill="#E1241A"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/><path d="M9 9h6v2H9zm0 4h6v2H9z"/></svg>` },
-    // ── Messaging ─────────────────────────────────────────────────────────────
-    { title: 'Search Telegram',   href: `https://t.me/search?query=${q}`,
-      svg: `<svg viewBox="0 0 24 24" fill="#26A5E4"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L8.32 13.617l-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.828.942z"/></svg>` },
-    { title: 'Search WhatsApp',   href: `https://wa.me/?text=${q}`,
-      svg: `<svg viewBox="0 0 24 24" fill="#25D366"><path d="M12 0C5.4 0 0 5.4 0 12c0 2.1.6 4.1 1.6 5.9L0 24l6.3-1.6A12 12 0 0012 24c6.6 0 12-5.4 12-12S18.6 0 12 0zm6.2 16.8c-.3.8-1.4 1.5-2 1.6-.5.1-1.1.1-1.7-.1-.4-.1-.9-.3-1.5-.6-2.6-1.1-4.3-3.7-4.5-3.9-.1-.2-1.1-1.5-1.1-2.8 0-1.3.7-2 .9-2.2.3-.3.6-.3.8-.3h.6c.2 0 .4 0 .6.5l.8 2c.1.2.1.4 0 .5l-.4.5c-.1.1-.2.3-.1.5.3.5.8 1.2 1.4 1.7.7.6 1.3.9 1.6 1 .2.1.4.1.5-.1l.5-.6c.2-.2.3-.2.5-.1l2 .9c.2.1.3.2.3.4v.1z"/></svg>` },
     // ── Inmate-specific ───────────────────────────────────────────────────────
     { title: 'Search InmateAid',  href: `https://www.inmateaid.com/search?category=All&q=${q}`,
       svg: `<svg viewBox="0 0 24 24" fill="none" stroke="#e8e6e1" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 3c-2.5 3-4 5.5-4 9s1.5 6 4 9"/><path d="M12 3c2.5 3 4 5.5 4 9s-1.5 6-4 9"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3.6" y1="8" x2="20.4" y2="8"/><line x1="3.6" y1="16" x2="20.4" y2="16"/></svg>` },
@@ -859,7 +860,7 @@ async function loadWarrants() {
       if (!res.ok) throw new Error('HTTP ' + res.status);
       html = await res.text();
     } catch (e2) {
-      meta.textContent = '⚠ Could not load warrant list: ' + e2.message;
+      meta.textContent = '⚠ Could not load warrant list: ' + e2.message + '. Try opening locally.';
       return;
     }
   }
@@ -1010,14 +1011,59 @@ document.getElementById('pdf-file-input').addEventListener('change', async funct
     const pdf  = await loadPDFFromBlob(blob);
     const text = await extractText(pdf);
     setProgress('Parsing records…');
-    const { inmates, printDate } = parseRoster(text);
+    const { inmates, printDate, parseError } = parseRoster(text);
+    
+    if (parseError) {
+      initApp(inmates, printDate, `PDF format seems to have changed. Found ${inmates.length} records.<br><br>Please help fix the parser by sharing the PDF: <a href="mailto:developer@example.com?subject=JailbirdPDF%20Issue">Report Issue</a>`);
+      return;
+    }
+    
     initApp(inmates, printDate);
   } catch (err) {
     showError('Failed to load file: ' + err.message);
   }
 });
 
-// ── Boot ──────────────────────────────────────────────────────────────────────
+// ── Utility Functions ─────────────────────────────────────────────────
+function clearCache() {
+  indexedDB.deleteDatabase(DB_NAME).onsuccess = () => {
+    alert("Local cache cleared. The PDF will be re-downloaded next time.");
+  };
+}
+
+function downloadCSV() {
+  if (RAW.length === 0) {
+    alert("No data to export.");
+    return;
+  }
+
+  const headers = ["Name", "Age", "Sex", "Booking Date", "Elapsed", "Booking #", "Holds"];
+  const csvRows = [headers.join(',')];
+
+  RAW.forEach(r => {
+    const row = [
+      `"${r.name.replace(/"/g, '""')}"`,
+      r.age,
+      r.sex,
+      `"${r.booking}"`,
+      `"${elapsed(r.booking)}"`,
+      `"${r.num}"`,
+      `"${r.holds.replace(/"/g, '""')}"` // Escape quotes in holds
+    ];
+    csvRows.push(row.join(','));
+  });
+
+  const csvString = csvRows.join('\n');
+  const blob = new Blob([csvString], { type: 'text/csv' });
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `jailbird_export_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+  window.URL.revokeObjectURL(url);
+}
+
+// ── Boot ───────────────────────────────────────────────────────────────────────
 loadRoster();
 </script>
 </body>
